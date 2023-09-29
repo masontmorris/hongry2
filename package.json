@@ -8,7 +8,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "node server.js",
         "seed": "node seeds/index.js",
-        "watch": "nodemon server.js"
+        "watch": "nodemon db/index.js"
     },
     "author": "",
     "license": "ISC",
@@ -17,7 +17,7 @@
         "@neo4j/graphql": "^3.24.1",
         "bcrypt": "^5.0.0",
         "cloudinary": "^1.30.0",
-        "dotenv": "^8.2.0",
+        "dotenv": "^8.6.0",
         "express": "^4.17.1",
         "express-session": "^1.17.1",
         "graphql": "^16.7.1",
@@ -29,6 +29,7 @@
         "uuidv4": "^6.2.13"
     },
     "devDependencies": {
+        "@types/dotenv": "^8.2.0",
         "@types/react": "^18.0.37",
         "@types/react-dom": "^18.0.11",
         "@vitejs/plugin-react-swc": "^3.0.0",
@@ -36,7 +37,6 @@
         "eslint-plugin-react": "^7.32.2",
         "eslint-plugin-react-hooks": "^4.6.0",
         "eslint-plugin-react-refresh": "^0.3.4",
-        "nodemon": "^2.0.16",
         "vite": "^4.3.9"
     }
 }
