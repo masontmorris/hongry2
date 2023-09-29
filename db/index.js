@@ -58,6 +58,47 @@ type Recipe {
     recipes: [Recipe!]! @relationship(type: "CREATED_BY", direction: IN)
     comments: [Comment!]! @relationship(type: "WROTE", direction: IN)
     }
+
+    type Query {
+        recipe(id: ID!): Recipe
+        recipes: [Recipe!]!
+        ingredient(id: ID!): Ingredient
+        ingredients: [Ingredient!]!
+        step(id: ID!): Step
+        steps: [Step!]!
+        media(id: ID!): Media
+        medias: [Media!]!
+        comment(id: ID!): Comment
+        comments: [Comment!]!
+        user(id: ID!): User
+        users: [User!]!
+    }
+    
+    type Mutation {
+        createRecipe(name: String!, description: String, ingredients: [ID!]!, steps: [ID!]!, media: [ID!]!, authorId: ID!): Recipe
+        updateRecipe(id: ID!, name: String, description: String): Recipe
+        deleteRecipe(id: ID!): Recipe
+        
+        createIngredient(name: String!): Ingredient
+        updateIngredient(id: ID!, name: String): Ingredient
+        deleteIngredient(id: ID!): Ingredient
+        
+        createStep(description: String!, order: Int!, recipeId: ID!): Step
+        updateStep(id: ID!, description: String, order: Int): Step
+        deleteStep(id: ID!): Step
+        
+        createMedia(url: String!, type: MediaType!, recipeId: ID, commentId: ID): Media
+        updateMedia(id: ID!, url: String, type: MediaType): Media
+        deleteMedia(id: ID!): Media
+        
+        createComment(text: String!, media: [ID], recipeId: ID!, authorId: ID!): Comment
+        updateComment(id: ID!, text: String): Comment
+        deleteComment(id: ID!): Comment
+        
+        createUser(name: String!): User
+        updateUser(id: ID!, name: String): User
+        deleteUser(id: ID!): User
+    }
 `;
 
 // neo4j driver + graphql integration
