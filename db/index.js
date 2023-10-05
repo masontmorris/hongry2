@@ -6,8 +6,8 @@ import "dotenv/config";
 // require("dotenv").config();
 
 // graphql types
-const typeDefs = `#graphql
-type Recipe {
+const typeDefs = `
+    type Recipe {
     id: ID!
     name: String!
     description: String
@@ -101,19 +101,65 @@ type Recipe {
     }
 `;
 
-// neo4j driver + graphql integration
-const driver = neo4j.driver(process.env.NEO4J_URI, neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD));
+// require("dotenv").config();
+// const { ApolloServer } = require("apollo-server");
+// const { Neo4jGraphQL } = require("@neo4j/graphql");
+// const neo4j = require("neo4j-driver");
 
+// Load environment variables
+const { NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD } = process.env;
+
+// Connect to Neo4j database
+const driver = neo4j.driver(NEO4J_URI, neo4j.auth.basic(NEO4J_USER, NEO4J_PASSWORD));
+
+// Instantiate Neo4jGraphQL with the defined schema and Neo4j driver
 const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
-// apollo server setup
+// Set up the ApolloServer with the generated schema and context
 const server = new ApolloServer({
     schema: await neoSchema.getSchema(),
+    introspection: true,
+    playground: true,
+    context: ({ req }) => {
+        return {
+            driver, // Passing the Neo4j driver to the context
+        };
+    },
 });
 
-const { url } = await startStandaloneServer(server, {
-    context: async ({ req }) => ({ req }),
-    listen: { port: 4000 },
-});
+server.applyMiddleware({ app });
+// Start the server
+app.listen({ port: 4000 })
+    .then(({ url }) => {
+        console.log(`🚀 Server ready at ${url}`);
+    })
+    .catch((err) => {
+        console.error("Error starting server:", err);
+    });
 
-console.log(`🚀 Server ready at ${url}`);
+// neo4j driver + graphql integration
+// const driver = neo4j.driver(process.env.NEO4J_URI, neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD));
+
+// const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+// // apollo server setup
+// const server = new ApolloServer({
+//     schema: await neoSchema.getSchema(),
+//     introspection: true,
+//     playground: true,
+//     context: ({ req }) => {
+//         return {
+//             driver: neo4jDriver,
+//         };
+//     },
+// });
+
+// const { url } = await startStandaloneServer(server, {
+//     context: async ({ req }) => {
+//         // console.log(req); // Log the request to the console
+//         return { req };
+//     },
+//     listen: { port: 4000 },
+// });
+
+// console.log(`🚀 Server ready at ${url}`);
